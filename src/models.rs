@@ -37,6 +37,12 @@ pub struct QuestionResult {
 
 #[derive(Debug, Deserialize)]
 pub struct QuestionData {
+    pub id: i64,
+    pub content: String,
+    #[serde(rename = "answerCount")]
+    pub answer_count: i32,
+    #[serde(rename = "subjectId")]
+    pub subject_id: Option<i32>, 
     pub answer: AnswerData,
 }
 
@@ -74,4 +80,14 @@ pub struct TransformedAuthor {
     pub id: String,
     pub nick: String,
     pub rank: String,
+}
+
+#[derive(Serialize)]
+pub struct TransformedQuestion {
+    pub question_id: String,
+    pub content: String,
+    pub answer_count: i32,
+    #[serde(rename = "subjectId")]
+    pub subject_id: Option<i32>,
+    pub answers: Vec<TransformedAnswer>,
 }
