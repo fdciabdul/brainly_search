@@ -1,4 +1,5 @@
 use reqwest::header::HeaderMap;
+use scraper::{Html};
 
 pub fn build_headers() -> HeaderMap {
     let mut headers = reqwest::header::HeaderMap::new();
@@ -19,4 +20,19 @@ pub fn build_headers() -> HeaderMap {
     headers.insert("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36".parse().unwrap());
 
     headers
+}
+
+
+pub fn html_to_text(html_content: &str) -> String {
+    let fragment = Html::parse_fragment(html_content);
+    let text = fragment.root_element().text().collect::<String>();
+    text.trim().to_string()
+}
+
+pub fn truncate_string(s: &str, max_len: usize) -> String {
+    if s.len() > max_len {
+        format!("{}...", &s[..max_len-3]) // Truncate and add "..."
+    } else {
+        s.to_string()
+    }
 }

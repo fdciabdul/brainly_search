@@ -3,7 +3,9 @@ use clap::{Arg, App};
 use std::fs::File;
 use std::io::Write;
 use crate::models::{SearchPayload, ResponseData, TransformedAnswer, Query, Context, Pagination, TransformedAuthor,TransformedQuestion};
-use crate::utils::build_headers;
+use crate::utils::{html_to_text,build_headers,truncate_string};
+use prettytable::{Table, row};
+use term_size;
 
 mod models;
 mod utils;
@@ -89,7 +91,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut file = File::create(output_path)?;
         writeln!(file, "{}", json_output)?;
     } else {
-        println!("{}", json_output);
+        let mut table = Table::new();
+        let width = term_size::dimensions().map_or(80, |(w, _)| w);
+        let max_col_width = (width - 10) / 2;
+        table.add_row(row!["Pertanyaan", "Jawaban"]);
+
+        for item in &transformed_data {
+            let question_text = html_to_text(&item.content);
+            let truncated_question = truncate_string(&question_text, max_col_width);
+            if let Some(answer) = item.answers.first() {
+                let answer_text = html_to_text(&answer.content);
+                let truncated_answer = truncate_string(&answer_text, max_col_width);
+                table.add_row(row![truncated_question, truncated_answer]);
+            } else {
+                table.add_row(row![truncated_question, "No Answer"]);
+            }
+        }
+        
+        table.printstd();
+
+        
     }
 
     Ok(())
