@@ -17,7 +17,6 @@ pub fn build_headers() -> HeaderMap {
     headers.insert("sec-fetch-mode", "cors".parse().unwrap());
     headers.insert("sec-fetch-site", "cross-site".parse().unwrap());
     headers.insert("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36".parse().unwrap());
-    headers.insert("x-api-key", "22df2c14-f58b-4603-abf2-788ba76862a0".parse().unwrap());
 
     headers
 }
